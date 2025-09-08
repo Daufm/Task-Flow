@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import React from 'react'
+import axios from 'axios'
 import Sidebar from './sidebar'
 import Navbar from './navbar'
 import Content from './content'
@@ -19,6 +20,48 @@ function App() {
     'Low Priority',
     'Others'
   ]
+   const categories = [
+    'Work',
+    'Personal',
+    'Shopping',
+    'Health',
+    'Finance',
+    'Education',
+    'Others'
+  ]
+
+  const [taskname, setTaskname] = useState('')
+  const [priority, setPriority] = useState('Medium')
+  const [category, setCategory] = useState('Others')
+  const [dueDate, setDueDate] = useState('')
+
+ 
+
+  function handleAddTask(e) {
+    e.preventDefault();
+
+    // Here you would typically handle the form submission,
+    const newTask = {
+      title: taskname,
+      priority,
+      category,
+      dueDate
+    }
+    setTask(false)
+
+    // e.g., by sending the task data to your backend API.
+    console.log('New Task Added:', newTask)
+
+    axios.post('http://localhost:5000/newtasks', newTask)
+      .then(response => {
+        console.log('Task added successfully:', response.data)
+      })
+      .catch(error => {
+        console.error('Error adding task:', error)
+      })
+
+  }
+
 
   return (
     <div className="App h-screen flex flex-col w-full">
@@ -89,14 +132,14 @@ function App() {
                   {task && (
                     <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
                       <h3 className="text-lg font-bold mb-2">Add New Task</h3>
-                      <form className="space-y-3">
+                      <form className="space-y-3" onSubmit={handleAddTask}>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
-                          <input type="text" className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          <input type="text" value={taskname} onChange={(e) => setTaskname(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                          <select className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option>High</option>
                             <option>Medium</option>
                             <option>Low</option>
@@ -104,11 +147,17 @@ function App() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                          <input type="text" className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            {categories.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                          <input type="date" className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         </div>
                         <div className="flex justify-end space-x-2">
                           <button type="button" className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300" onClick={() => setTask(false)}>Cancel</button>

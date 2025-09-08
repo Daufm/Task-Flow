@@ -14,8 +14,13 @@
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@tailwindcss/vite": "^4.1.13",
+    "axios": "^1.11.0",
+    "body-parser": "^2.2.0",
+    "cores": "^0.8.5",
+    "express": "^5.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "sequelize": "^6.37.7",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
