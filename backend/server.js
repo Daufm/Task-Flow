@@ -20,8 +20,8 @@ app.get("/", (req, res) => {
 // });
 app.post("/newtasks", async (req, res) => {
     try {
-        const { title, priority, category, dueDate } = req.body;
-        const newTask = await Task.create({ title, priority, category, dueDate });
+        const { title, priority, category, due_date, due_date_time } = req.body;
+        const newTask = await Task.create({ title, priority, category, due_date, due_date_time });
         res.status(201).json(newTask);
     } catch (error) {
         console.error("Error creating task:", error);
