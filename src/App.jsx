@@ -1,0 +1,185 @@
+import { useState } from 'react'
+import React from 'react'
+import axios from 'axios'
+import Sidebar from './sidebar'
+import Navbar from './navbar'
+import Content from './content'
+import './App.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faFilter } from '@fortawesome/free-solid-svg-icons'
+
+function App() {
+  const [task, setTask] = useState(false)
+
+  const [showFilterOptions, setShowFilterOptions] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState('All Task')
+  const filterOptions = [
+    'All Task',
+    'High Priority',
+    'Medium Priority',
+    'Low Priority',
+    'Others'
+  ]
+   const categories = [
+    'Work',
+    'Personal',
+    'Shopping',
+    'Health',
+    'Finance',
+    'Education',
+    'Others'
+  ]
+
+  const [taskname, setTaskname] = useState('')
+  const [priority, setPriority] = useState('Medium')
+  const [category, setCategory] = useState('Others')
+  const [dueDate, setDueDate] = useState('')
+
+ 
+
+  function handleAddTask(e) {
+    e.preventDefault();
+
+    // Here you would typically handle the form submission,
+    const newTask = {
+      title: taskname,
+      priority,
+      category,
+      dueDate
+    }
+    setTask(false)
+
+    // e.g., by sending the task data to your backend API.
+    console.log('New Task Added:', newTask)
+
+    axios.post('http://localhost:5000/newtasks', newTask)
+      .then(response => {
+        console.log('Task added successfully:', response.data)
+      })
+      .catch(error => {
+        console.error('Error adding task:', error)
+      })
+
+  }
+
+
+  return (
+    <div className="App h-screen flex flex-col w-full">
+      <div className="w-full">
+        <Navbar />
+      </div>
+      <div className="flex flex-1 min-h-0">
+        <Sidebar />
+        <main className="flex-1 bg-gray-100 p-8 overflow-auto bg-gray-700 ">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-white text-2xl font-bold mb-2">Welcome to TaskFlow</h1>
+              <p className="text-gray-300">Manage your tasks efficiently</p>
+            </div>
+            <div className="flex items-center space-x-6">
+              {/* <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search tasks..."
+                  className="w-48 px-3 py-2 rounded bg-gray-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-8"
+                />
+                <FontAwesomeIcon icon={faSearch} className="w-4 h-4 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
+              </div> */}
+              <div className="flex flex-row relative pr-4">
+                <label
+                  className="text-white block mb-2 font-medium text-gray-700 flex items-center cursor-pointer pr-2"
+                  onClick={() => setShowFilterOptions(!showFilterOptions)}
+                >
+                  <FontAwesomeIcon icon={faFilter} className="mr-2" />
+                  Filter:
+                </label>
+                <div className="relative">
+                  <button
+                    className="border border-gray-300 rounded px-2 py-1 w-40 flex items-center justify-between bg-white"
+                    onClick={() => setShowFilterOptions(!showFilterOptions)}
+                  >
+                    {selectedFilter}
+                    <span className="ml-2">
+                      <FontAwesomeIcon icon={faFilter} />
+                    </span>
+                  </button>
+                  {showFilterOptions && (
+                    <ul className="absolute left-0 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg z-10">
+                      {filterOptions.map(option => (
+                        <li
+                          key={option}
+                          className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${selectedFilter === option ? 'bg-gray-200 font-bold' : ''}`}
+                          onClick={() => {
+                            setSelectedFilter(option)
+                            setShowFilterOptions(false)
+                          }}
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="relative">
+                  <button 
+                    className="bg-blue-500 hover:bg-blue-600 text-white border  rounded px-3 py-2 w-40 flex items-center justify-between"
+                    onClick={()=> setTask((prev) => !prev)}>
+                    Add New Task
+                  </button>
+                  {task && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
+                      <h3 className="text-lg font-bold mb-2">Add New Task</h3>
+                      <form className="space-y-3" onSubmit={handleAddTask}>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
+                          <input type="text" value={taskname} onChange={(e) => setTaskname(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                          <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            {categories.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                          <button type="button" className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300" onClick={() => setTask(false)}>Cancel</button>
+                          <button type="submit" className="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600">Add Task</button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr className="w-full border-t border-gray-300 mb-6" />
+          {/* Main content goes here */}
+          <Content />
+
+        </main>
+      </div>
+    </div>
+  )
+}
+
+
+
+export default App
