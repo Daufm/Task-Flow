@@ -4,6 +4,7 @@ import axios from 'axios'
 import Sidebar from './sidebar'
 import Navbar from './navbar'
 import Content from './content'
+import AddTask from './addTask'
 import './App.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faFilter } from '@fortawesome/free-solid-svg-icons'
@@ -20,47 +21,7 @@ function App() {
     'Low Priority',
     'Others'
   ]
-   const categories = [
-    'Work',
-    'Personal',
-    'Shopping',
-    'Health',
-    'Finance',
-    'Education',
-    'Others'
-  ]
-
-  const [taskname, setTaskname] = useState('')
-  const [priority, setPriority] = useState('Medium')
-  const [category, setCategory] = useState('Others')
-  const [dueDate, setDueDate] = useState('')
-
- 
-
-  function handleAddTask(e) {
-    e.preventDefault();
-
-    // Here you would typically handle the form submission,
-    const newTask = {
-      title: taskname,
-      priority,
-      category,
-      dueDate
-    }
-    setTask(false)
-
-    // e.g., by sending the task data to your backend API.
-    console.log('New Task Added:', newTask)
-
-    axios.post('http://localhost:5000/newtasks', newTask)
-      .then(response => {
-        console.log('Task added successfully:', response.data)
-      })
-      .catch(error => {
-        console.error('Error adding task:', error)
-      })
-
-  }
+  
 
 
   return (
@@ -112,66 +73,32 @@ function App() {
                           onClick={() => {
                             setSelectedFilter(option)
                             setShowFilterOptions(false)
-                          }}
-                        >
-                          {option}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
+                            }}
+                          >
+                            {option}
+                          </li>
+                          ))}
+                        </ul>
+                        )}
+                      </div>
+                      </div>
 
-              <div>
-                <div className="relative">
-                  <button 
-                    className="bg-blue-500 hover:bg-blue-600 text-white border  rounded px-3 py-2 w-40 flex items-center justify-between"
-                    onClick={()=> setTask((prev) => !prev)}>
-                    Add New Task
-                  </button>
-                  {task && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded shadow-lg p-4 z-10">
-                      <h3 className="text-lg font-bold mb-2">Add New Task</h3>
-                      <form className="space-y-3" onSubmit={handleAddTask}>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
-                          <input type="text" value={taskname} onChange={(e) => setTaskname(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                          <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            {categories.map((category) => (
-                              <option key={category} value={category}>
-                                {category}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                          <button type="button" className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300" onClick={() => setTask(false)}>Cancel</button>
-                          <button type="submit" className="px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600">Add Task</button>
-                        </div>
-                      </form>
+                      <div>
+                      <div className="relative">
+                        <button 
+                        className="bg-blue-500 hover:bg-blue-600 text-white border rounded px-3 py-2 w-40 flex items-center justify-between shadow transition duration-150"
+                        onClick={()=> setTask((prev) => !prev)}>
+                        <span className="font-semibold">+ Add New Task</span>
+                        </button>
+                        {task && (
+                          <AddTask setTask = {setTask}/>
+                        )}
+                      </div>
+                      </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr className="w-full border-t border-gray-300 mb-6" />
-          {/* Main content goes here */}
+                    </div>
+                    <hr className="w-full border-t border-gray-300 mb-6" />
+                    {/* Main content goes here */}
           <Content />
 
         </main>

@@ -1,25 +1,35 @@
-import React from "react";
+import React from 'react';
+import AddTask from './addTask'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faTachometerAlt, faPlusCircle, faCalendarDay, faCalendarAlt, faCheckCircle, faExclamationTriangle, faBriefcase, faUser, faShoppingCart, faHeartbeat, faMoneyBill, faCog } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+
 
 function Sidebar() {
 const [expanded, setExpanded] = React.useState(true);
-const [task, setTask] = React.useState(false);
+const [task, setTask] = useState(false)
 
 
 return (
-    <aside className={`bg-gray-800 text-white transition-all duration-300 ${expanded ? "w-48" : "w-12"} h-full`}>
+    <aside className={`bg-gray-800 text-white transition-all duration-300 ${expanded ? "w-48" : "w-12"} h-full relative`}>
         <div className="p-2 flex items-center justify-between h-10">
             <h2 className={`text-lg font-bold mb-0 transition-opacity duration-300 ${expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}>Tasks</h2>
             <button className="focus:outline-none p-1" onClick={() => setExpanded((prev) => !prev)}>
                 <FontAwesomeIcon icon={faArrowLeft} className={`transition-transform duration-300 bg-gray-700 ${expanded ? "" : "rotate-180"}`} />
             </button>
         </div>
-        <div className=" border-b border-gray-700">
-            <button onClick={() => setTask((prev) => !prev)} className={`flex cursor-pointer hover:bg-gray-700 items-center text-base font-semibold p-2 mb-0 transition-opacity duration-300 ${expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"}`}>
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-1 w-3 h-3" />
-                <span className="text-base">Add Task</span>
+      
+        <div className="relative">
+            <button
+                className="bg-blue-500 hover:bg-blue-600 text-white border rounded px-3 py-2 w-40 flex items-center justify-between shadow transition duration-150"
+                onClick={() => setTask((prev) => !prev)}>
+                <span className="font-semibold">+ Add New Task</span>
             </button>
+            {task && (
+                <div className="fixed top-16 right-8 w-72 bg-transparent text-black rounded shadow-lg z-50 p-4">
+                    <AddTask setTask = {setTask}/>
+                </div>
+            )}
         </div>
         <div className="mt-4">
             <ul className={`space-y-1 ${expanded ? "block" : "hidden"}`}>
