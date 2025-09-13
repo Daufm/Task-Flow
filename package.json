@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "nodemon backend/server.js",
     "run": "npm run dev",
+    "run-server": "nodemon server.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -17,7 +18,10 @@
     "axios": "^1.11.0",
     "body-parser": "^2.2.0",
     "cores": "^0.8.5",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "mysql2": "^3.14.5",
+    "nodemon": "^3.1.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sequelize": "^6.37.7",
