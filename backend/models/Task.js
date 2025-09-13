@@ -6,9 +6,8 @@ const Task = sequelize.define("Task", {
   priority: { type: DataTypes.STRING, allowNull: false },
   category: { type: DataTypes.STRING },
   status: { type: DataTypes.STRING, defaultValue: "Pending" },
-  due_date: {  type: DataTypes.DATE },
-  due_date_time: { type: DataTypes.TIME , defaultValue: "00:00:00" },
-
+  due_date: { type: DataTypes.DATEONLY },
+  due_date_time: { type: DataTypes.TIME },
 });
 
 export default Task;
