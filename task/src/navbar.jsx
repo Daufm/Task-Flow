@@ -1,10 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook ,faCog,faHome,faSearch } from '@fortawesome/free-solid-svg-icons';
 
 
 function Navbar() {
+
+    // const [searchTerm, setSearchTerm] = React.useState("");
+    const navigate = useNavigate();
+
+    const handleSearch=(event)=>{
+        navigate(`/?search=${event.target.value}`);
+    }
+
+    
+
     return (
         <nav className="bg-gray-800 text-white px-6 py-2 flex items-center w-full">
             {/* Left: Logo and Title */}
@@ -30,13 +41,14 @@ function Navbar() {
                 <div className="relative">
                     <input
                         type="text"
+                        onChange={handleSearch}
                         placeholder="Search tasks..."
                         className="w-40 px-3 py-1 rounded bg-gray-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-8"
                     />
                     <FontAwesomeIcon icon={faSearch} className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
                 </div>
-                <button className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700">Log In</button>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium">Sign Up</button>
+                <button onClick={()=>{}} className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700">Log In</button>
+                <button onClick={()=>{}} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium">Sign Up</button>
             </div>
         </nav>
     );

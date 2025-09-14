@@ -30,6 +30,7 @@ function Content() {
   const date = searchParams.get("date"); // e.g. "today", "upcoming"
   const status = searchParams.get("status"); // e.g. "done"
   const priority = searchParams.get("priority"); // e.g. "high"
+  const search = searchParams.get("search"); // e.g. "meeting"
 
   useEffect(() => {
     // build query params dynamically
@@ -38,6 +39,7 @@ function Content() {
     if (date) query.append("date", date);
     if (status) query.append("status", status);
     if (priority) query.append("priority", priority);
+    if (search) query.append("search", search);
 
     axios
       .get(`${API_URL}/tasks?${query.toString()}`)
@@ -47,7 +49,7 @@ function Content() {
       .catch((error) => {
         console.error("Error fetching tasks:", error);
       });
-  }, [category, date, status, priority]);
+  }, [search, category, date, status, priority]);
 
   const totalTask = tasks.length;
 
@@ -74,12 +76,23 @@ function Content() {
       </div>
 
       {/* Priority Sections */}
-      {priorities.map((priority) => (
-        <div key={priority.name} className="mb-6">
-          <h2 className={`font-bold text-lg mb-2 ${priority.color}`}>
-            • {priority.name}
-          </h2>
-          {tasks
+      {priorities.map((priority) => {
+        const filteredTasks = tasks.filter((task) => task.priority === priority.name);
+        // if there is not task
+        if (filteredTasks.length === 0) return (
+          <div key={priority.name} className="mb-6">
+            <h2 className={`font-bold text-lg mb-2 ${priority.color}`}>
+              • {priority.name}
+            </h2>
+            <div className="text-gray-400 italic">There are no tasks in this priority</div>
+          </div>
+        ); // Show a message if no tasks in this priority
+        return (
+          <div key={priority.name} className="mb-6">
+            <h2 className={`font-bold text-lg mb-2 ${priority.color}`}>
+              • {priority.name}
+            </h2>
+            {tasks
             .filter((task) => task.priority === priority.name)
             .map((task) => (
               <div
@@ -126,7 +139,8 @@ function Content() {
               </div>
             ))}
         </div>
-      ))}
+      );
+      })}
 
       {/* Footer */}
       <footer className="mt-8 border-t border-gray-700 pt-4 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400">

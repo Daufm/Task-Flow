@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 // Get all tasks
 // GET /tasks with optional filters
 app.get("/tasks", async (req, res) => {
-  const { category, priority, status, date } = req.query;
+  const { category, priority, status, date, search } = req.query;
 
   let filtered = await Task.findAll();
 
@@ -29,6 +29,9 @@ app.get("/tasks", async (req, res) => {
   }
   if (status) {
     filtered = filtered.filter((t) => t.status.toLowerCase() === status.toLowerCase());
+  }
+  if (search) {
+    filtered = filtered.filter((t) => t.title.toLowerCase().includes(search.toLowerCase()));
   }
   if (date) {
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
