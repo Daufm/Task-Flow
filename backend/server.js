@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import sequelize from "./db/db.js";
 import Task from "./models/Task.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,11 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
+
+
+
+app.use("/user", userRoutes);
+
 
 
 // Get all tasks
@@ -49,7 +55,7 @@ app.get("/tasks", async (req, res) => {
 
 app.post("/newtasks", async (req, res) => {
     try {
-      console.log("Request Body:", req.body); // Log the incoming request body
+      // console.log("Request Body:", req.body); // Log the incoming request body
         const { title, priority, category, due_date, due_date_time } = req.body;
         const newTask = await Task.create({ title, priority, category, due_date, due_date_time });
         res.status(201).json(newTask);

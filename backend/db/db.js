@@ -5,4 +5,6 @@ const sequelize = new Sequelize("task_manager", "root", "", {
   dialect: "mysql"
 });
 
+sequelize.sync(); // Sync all models
+
 export default sequelize;
