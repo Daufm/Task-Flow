@@ -14,7 +14,13 @@ function Navbar() {
         navigate(`/?search=${event.target.value}`);
     }
 
-    
+    const handleLogin=()=>{
+        navigate('/login');
+    }
+
+    const handleLogout=()=>{
+        navigate('/logout');
+    }
 
     return (
         <nav className="bg-gray-800 text-white px-6 py-2 flex items-center w-full">
@@ -47,8 +53,8 @@ function Navbar() {
                     />
                     <FontAwesomeIcon icon={faSearch} className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
                 </div>
-                <button onClick={()=>{}} className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700">Log In</button>
-                <button onClick={()=>{}} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium">Sign Up</button>
+                <button onClick={handleLogin} className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700 cursor-pointer">Log In</button>
+                <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium cursor-pointer">Sign Up</button>
             </div>
         </nav>
     );
