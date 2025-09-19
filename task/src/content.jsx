@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"; // safer
@@ -22,9 +24,60 @@ const categoryColor = [
   { name: "Others", color: "bg-gray-500" },
 ];
 
+ const categories = [
+      'Work',
+      'Personal',
+      'Shopping',
+      'Health',
+      'Finance',
+      'Education',
+      'Others'
+    ];
+
 function Content() {
   const [tasks, setTasks] = useState([]);
   const [searchParams] = useSearchParams();
+ const [taskEdit, setTaskEdit] = useState(false);
+ const [editedTask, setEditedTask] = useState({});
+// const [taskCompleted, setTaskCompleted] = useState(false);
+
+const handleTaskComplete = (task) => {
+  axios.post(`${API_URL}/taskapi/updateTask`, {
+    id: task.id,
+    status: "done"
+  })
+  .then((response) => {
+     toast.success(response.data.message || "Task updated successfully");
+     // Optionally refetch tasks here
+      setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+
+  })
+  .catch((error) => {
+    console.error("Error updating task:", error);
+    toast.error("Error updating task!");
+  });
+};
+
+// Handle Edit Task
+const handleEditTask = (task) => {
+    e.preventDefault();
+  setTaskEdit(false);
+  axios.post(`${API_URL}/taskapi/editTask`, {
+    id: task.id,
+    editedTask
+  })
+  .then((response) => {
+    toast.success(response.data.message || "Task edited successfully");
+     // Refetch tasks
+    axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
+    setTasks(Array.isArray(response.data) ? response.data : []);
+  });
+  })
+  .catch((error) => {
+    console.error("Error editing task:", error);
+    toast.error("Error editing task!");
+  });
+}
 
   const category = searchParams.get("category"); // e.g. "Work"
   const date = searchParams.get("date"); // e.g. "today", "upcoming"
@@ -128,14 +181,93 @@ function Content() {
                 {/* Actions */}
                 <div className="flex items-center ml-4">
                   <FontAwesomeIcon
+                    onClick={() => {setTaskEdit(true); setEditedTask(task);}}
                     icon={faEdit}
                     className="text-gray-400 hover:text-white cursor-pointer mr-4"
                   />
                   <FontAwesomeIcon
+                    onClick={() => {handleTaskComplete(task);
+                  }}
                     icon={faTrash}
                     className="text-gray-400 hover:text-white cursor-pointer"
                   />
                 </div>
+                {taskEdit && ( 
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white rounded-lg p-6 w-96">
+                    <h2 className="text-xl font-bold mb-4">Edit Task</h2>
+                    <form onSubmit={handleEditTask}>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2">Title</label>
+                        <input
+                          type="text"
+                          value={editedTask.title}
+                          onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
+                          className="border border-gray-300 rounded-lg p-2 w-full"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2">Due Date</label>
+                        <input type="date"
+                          value={editedTask.due_date}
+                          onChange={(e) => setEditedTask({ ...editedTask, due_date: e.target.value })}
+                          className="border border-gray-300 rounded-lg p-2 w-full"
+                          />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2">Due Time</label>
+                        <input
+                          type="time"
+                          value={editedTask.due_date_time}
+                          onChange={(e) => setEditedTask({ ...editedTask, due_date_time: e.target.value })}
+                          className="border border-gray-300 rounded-lg p-2 w-full"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2">Category</label>
+                        <select
+                          value={editedTask.category}
+                          onChange={(e) => setEditedTask({ ...editedTask, category: e.target.value })}
+                          className="border border-gray-300 rounded-lg p-2 w-full"
+                        >
+                          <option value="">Select a category</option>
+                          {categories.map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium mb-2">Priority</label>
+                        <select
+                          value={editedTask.priority}
+                          onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value })}
+                          className="border border-gray-300 rounded-lg p-2 w-full"
+                        >
+                          <option value="">Select a priority</option>
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                        </select>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <button type="submit" className="bg-blue-500 text-white rounded-lg px-4 py-2">
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="ml-2 bg-gray-300 text-gray-700 rounded-lg px-4 py-2"
+                          onClick={() => setTaskEdit(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                )}
               </div>
             ))}
         </div>

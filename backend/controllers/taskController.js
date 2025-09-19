@@ -48,7 +48,42 @@ export const AddTask = async (req, res) => {
         console.error("Error creating task:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-
-
 }
+
+
+export const UpdateTask = async (req ,res)=>{
+  const {id, status} = req.body;
+
+   try{
+    const task = await Task.findByPk(id);
+    if(!task){
+      return res.status(404).json({error: "Task not found"});
+    }
+          task.status = status;
+          await task.destroy();
+          res.json({message: "Task marked as done and removed"});
+   }catch(error){
+     console.error("Error updating task:", error);
+     res.status(500).json({ error: "Internal server error" });
+   }
+}
+
+
+export const EditTask = async(req, res)=>{
+   const {id , editedTask} = req.body;
+    try{
+      const task = await Task.findByPk(id);
+      if(!task){
+        return res.status(404).json({error: "Task not found"});
+      }
+      await task.update(editedTask);
+      res.json({message: "Task updated successfully"});
+    }catch(error){
+      console.error("Error updating task:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+   
+
+      
+  }
 
