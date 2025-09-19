@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon backend/server.js",
     "run": "npm run dev",
-    "run-server": "nodemon server.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -16,15 +15,9 @@
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.11.0",
-    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cores": "^0.8.5",
-    "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.5",
-    "nodemailer": "^7.0.6",
     "nodemon": "^3.1.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

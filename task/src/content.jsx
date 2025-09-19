@@ -42,7 +42,7 @@ function Content() {
     if (search) query.append("search", search);
 
     axios
-      .get(`${API_URL}/tasks?${query.toString()}`)
+      .get(`${API_URL}/taskapi/tasks?${query.toString()}`)
       .then((response) => {
         setTasks(Array.isArray(response.data) ? response.data : []);
       })
@@ -154,7 +154,7 @@ function Content() {
           <a href="#" className="hover:text-blue-400">
             Terms of Service
           </a>
-          <a href="#" className="hover:text-blue-400">
+          <a href="/settings" className="hover:text-blue-400">
             Settings
           </a>
         </div>

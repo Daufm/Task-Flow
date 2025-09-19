@@ -38,7 +38,7 @@ function Navbar() {
                 </li>
                 <li className="flex items-center space-x-1">
                     <FontAwesomeIcon icon={faCog} className="w-4 h-4 text-gray-300" />
-                    <a href="#" className="text-sm font-medium text-gray-200 hover:text-blue-400">Settings</a>
+                    <a onClick={() => navigate('/settings')} className="text-sm font-medium text-gray-200 hover:text-blue-400 cursor-pointer">Settings</a>
                 </li>
             </ul>
 
