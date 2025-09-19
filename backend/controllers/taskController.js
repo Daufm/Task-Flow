@@ -81,9 +81,6 @@ export const EditTask = async(req, res)=>{
     }catch(error){
       console.error("Error updating task:", error);
       res.status(500).json({ error: "Internal server error" });
-    }
-   
-
-      
+    }      
   }
 

@@ -59,25 +59,27 @@ const handleTaskComplete = (task) => {
 };
 
 // Handle Edit Task
-const handleEditTask = (task) => {
-    e.preventDefault();
+const handleEditTask = (e) => {
+  e.preventDefault();
   setTaskEdit(false);
-  axios.post(`${API_URL}/taskapi/editTask`, {
-    id: task.id,
-    editedTask
-  })
-  .then((response) => {
-    toast.success(response.data.message || "Task edited successfully");
-     // Refetch tasks
-    axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
-    setTasks(Array.isArray(response.data) ? response.data : []);
-  });
-  })
-  .catch((error) => {
-    console.error("Error editing task:", error);
-    toast.error("Error editing task!");
-  });
-}
+  axios.post(`${API_URL}/taskapi/editTask`,
+     {
+      id: editedTask.id, 
+       editedTask
+    } )
+    .then((response) => {
+      toast.success(response.data.message || "Task edited successfully");
+      // Refetch tasks
+      axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
+        setTasks(Array.isArray(response.data) ? response.data : []);
+      });
+    })
+    .catch((error) => {
+      console.error("Error editing task:", error);
+      toast.error("Error editing task!");
+    });
+};
+
 
   const category = searchParams.get("category"); // e.g. "Work"
   const date = searchParams.get("date"); // e.g. "today", "upcoming"
@@ -246,9 +248,10 @@ const handleEditTask = (task) => {
                           className="border border-gray-300 rounded-lg p-2 w-full"
                         >
                           <option value="">Select a priority</option>
-                          <option value="low">Low</option>
-                          <option value="medium">Medium</option>
-                          <option value="high">High</option>
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+
                         </select>
                       </div>
 
