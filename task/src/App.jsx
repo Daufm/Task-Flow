@@ -11,7 +11,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/dashboard" element={<Home />} />
-      <Route path="/setting" element={<Setting />} />
+      <Route path="/settings" element={<Setting />} />
       <Route path="/" element={<Home />}>
         <Route index element={<Content />} /> {/* for "/" */}
         <Route path="cat" element={<Content />} />

@@ -2,9 +2,10 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js"; // You need to implement this
+
+
 
 
 export const signup = async (req, res) => {
@@ -34,7 +35,7 @@ export const signup = async (req, res) => {
         `Your verification code is: ${verificationCode}`
     );
 
-    return res.status(201).json({ message: "Verification code sent to your email" });
+    return res.status(201).json({ message: "Verification code sent to your email",  });
   } catch (error) {
     console.error("Error during signup:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -43,6 +44,7 @@ export const signup = async (req, res) => {
 
 export const verify = async (req, res) => {
     const {email, code} = req.body;
+    
 
     try {
         const user = await User.findOne({where: {email}});
@@ -51,6 +53,7 @@ export const verify = async (req, res) => {
         }
         if(code === user.verificationCode) {
             user.verified = true;
+            user.verificationCode = null;
             await user.save();
             return res.status(200).json({message: "User verified successfully"});
         }
@@ -60,8 +63,15 @@ export const verify = async (req, res) => {
     }
 }
 
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
+//  console.log("JWT_SECRET:", process.env.JWT_SECRET);
+//  console.log("All env:", process.env);
+
+    const secret = process.env.JWT_SECRET;
+  
+
     try {
       const user = await User.findOne({ where: { email } });
       if (!user) {
@@ -80,7 +90,11 @@ export const login = async (req, res) => {
         return res.status(403).json({ message: "User not verified" });
       }
         // Generate JWT
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      if (!secret) {
+        throw new Error("JWT_SECRET is not defined in environment variables");
+      }
+      
+      const token = jwt.sign({ id: user.id }, secret, {
         expiresIn: "1h",
       });
       

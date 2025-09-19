@@ -49,7 +49,7 @@ function AddTask({ setTask }) {
     // e.g., by sending the task data to your backend API.
     console.log('New Task Added:', newTask)
 
-    axios.post('http://localhost:5000/newtasks', newTask)
+    axios.post('http://localhost:5000/taskapi/newtasks', newTask)
       .then(response => {
         console.log('Task added successfully:', response.data)
       })

@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
+
   const [expanded, setExpanded] = useState(true);
   const [task, setTask] = useState(false);
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function Sidebar() {
     navigate(path);
   };
 
-  return (
+  return ( 
     <aside
       className={`bg-gray-800 text-white transition-all duration-300 ${
         expanded ? "w-48" : "w-12"

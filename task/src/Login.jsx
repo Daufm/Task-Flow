@@ -7,6 +7,8 @@ import axios from 'axios';
 
 function Login() {
 
+const API_URL = import.meta.env.API_URL || 'http://localhost:5000';
+
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [rememberMe, setRememberMe] = useState(false);
@@ -15,7 +17,7 @@ const navigate = useNavigate();
 const handleSubmit = async (e)=>{
   e.preventDefault();
   try {
-    const response = await axios.post('/user/login', {
+    const response = await axios.post(`${API_URL}/user/login`, {
       email,
       password,
     });
