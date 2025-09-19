@@ -84,3 +84,18 @@ export const EditTask = async(req, res)=>{
     }      
   }
 
+export const updateTaskStatus = async(req ,res)=>{
+  const {id , status} = req.body;
+    try{
+      const task = await Task.findByPk(id);
+      if(!task){
+        return res.status(404).json({error: "task not found"})
+      }
+      task.status = status;
+      await task.save();
+      res.json({message: "Task status updated successfully"});
+    }catch(error){
+      console.error("Error updating task:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+}

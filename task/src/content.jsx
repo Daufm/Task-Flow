@@ -39,9 +39,31 @@ function Content() {
   const [searchParams] = useSearchParams();
  const [taskEdit, setTaskEdit] = useState(false);
  const [editedTask, setEditedTask] = useState({});
-// const [taskCompleted, setTaskCompleted] = useState(false);
+ 
 
-const handleTaskComplete = (task) => {
+
+
+const handleCheck = (e, task) => {
+  const newStatus = e.target.checked ? "done" : "pending";
+  axios.post(`${API_URL}/taskapi/updateTaskStatus`, {
+    id: task.id,
+    status: newStatus
+  })
+  .then((response) => {
+    toast.success(response.data.message || "Task updated successfully");
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === task.id ? { ...t, status: newStatus } : t
+      )
+    );
+  })
+  .catch((error) => {
+    console.error("Error updating task:", error);
+    toast.error("Error updating task!");
+  });
+};
+
+const handleTaskDelete = (task) => {
   axios.post(`${API_URL}/taskapi/updateTask`, {
     id: task.id,
     status: "done"
@@ -155,7 +177,12 @@ const handleEditTask = (e) => {
                 className="bg-gray-800 rounded-lg p-4 mb-3 flex items-center justify-between"
               >
                 <div className="flex items-center">
-                  <input type="checkbox" className="mr-4" />
+                 <input
+                    checked={task.status === "done"}
+                    onChange={(e) => {handleCheck(e , task)}}
+                    type="checkbox"
+                    className="mr-4"
+                  />
                   <div>
                     <span className="font-semibold text-white">
                       {task.title}
@@ -176,6 +203,10 @@ const handleEditTask = (e) => {
                       >
                         {task.category}
                       </span>
+
+                      <span className="font-semibold text-white pl-10">
+                         {task.status}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -188,7 +219,7 @@ const handleEditTask = (e) => {
                     className="text-gray-400 hover:text-white cursor-pointer mr-4"
                   />
                   <FontAwesomeIcon
-                    onClick={() => {handleTaskComplete(task);
+                    onClick={() => {handleTaskDelete(task);
                   }}
                     icon={faTrash}
                     className="text-gray-400 hover:text-white cursor-pointer"
