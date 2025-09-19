@@ -39,9 +39,31 @@ function Content() {
   const [searchParams] = useSearchParams();
  const [taskEdit, setTaskEdit] = useState(false);
  const [editedTask, setEditedTask] = useState({});
-// const [taskCompleted, setTaskCompleted] = useState(false);
+ 
 
-const handleTaskComplete = (task) => {
+
+
+const handleCheck = (e, task) => {
+  const newStatus = e.target.checked ? "done" : "pending";
+  axios.post(`${API_URL}/taskapi/updateTaskStatus`, {
+    id: task.id,
+    status: newStatus
+  })
+  .then((response) => {
+    toast.success(response.data.message || "Task updated successfully");
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === task.id ? { ...t, status: newStatus } : t
+      )
+    );
+  })
+  .catch((error) => {
+    console.error("Error updating task:", error);
+    toast.error("Error updating task!");
+  });
+};
+
+const handleTaskDelete = (task) => {
   axios.post(`${API_URL}/taskapi/updateTask`, {
     id: task.id,
     status: "done"
@@ -59,25 +81,27 @@ const handleTaskComplete = (task) => {
 };
 
 // Handle Edit Task
-const handleEditTask = (task) => {
-    e.preventDefault();
+const handleEditTask = (e) => {
+  e.preventDefault();
   setTaskEdit(false);
-  axios.post(`${API_URL}/taskapi/editTask`, {
-    id: task.id,
-    editedTask
-  })
-  .then((response) => {
-    toast.success(response.data.message || "Task edited successfully");
-     // Refetch tasks
-    axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
-    setTasks(Array.isArray(response.data) ? response.data : []);
-  });
-  })
-  .catch((error) => {
-    console.error("Error editing task:", error);
-    toast.error("Error editing task!");
-  });
-}
+  axios.post(`${API_URL}/taskapi/editTask`,
+     {
+      id: editedTask.id, 
+       editedTask
+    } )
+    .then((response) => {
+      toast.success(response.data.message || "Task edited successfully");
+      // Refetch tasks
+      axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
+        setTasks(Array.isArray(response.data) ? response.data : []);
+      });
+    })
+    .catch((error) => {
+      console.error("Error editing task:", error);
+      toast.error("Error editing task!");
+    });
+};
+
 
   const category = searchParams.get("category"); // e.g. "Work"
   const date = searchParams.get("date"); // e.g. "today", "upcoming"
@@ -153,7 +177,12 @@ const handleEditTask = (task) => {
                 className="bg-gray-800 rounded-lg p-4 mb-3 flex items-center justify-between"
               >
                 <div className="flex items-center">
-                  <input type="checkbox" className="mr-4" />
+                 <input
+                    checked={task.status === "done"}
+                    onChange={(e) => {handleCheck(e , task)}}
+                    type="checkbox"
+                    className="mr-4"
+                  />
                   <div>
                     <span className="font-semibold text-white">
                       {task.title}
@@ -174,6 +203,10 @@ const handleEditTask = (task) => {
                       >
                         {task.category}
                       </span>
+
+                      <span className="font-semibold text-white pl-10">
+                         {task.status}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -186,7 +219,7 @@ const handleEditTask = (task) => {
                     className="text-gray-400 hover:text-white cursor-pointer mr-4"
                   />
                   <FontAwesomeIcon
-                    onClick={() => {handleTaskComplete(task);
+                    onClick={() => {handleTaskDelete(task);
                   }}
                     icon={faTrash}
                     className="text-gray-400 hover:text-white cursor-pointer"
@@ -246,9 +279,10 @@ const handleEditTask = (task) => {
                           className="border border-gray-300 rounded-lg p-2 w-full"
                         >
                           <option value="">Select a priority</option>
-                          <option value="low">Low</option>
-                          <option value="medium">Medium</option>
-                          <option value="high">High</option>
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+
                         </select>
                       </div>
 
