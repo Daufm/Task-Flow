@@ -22,8 +22,10 @@ function AddTask({ setTask }) {
     const [category, setCategory] = useState('Others')
     const [dueDate, setDueDate] = useState('')
     const [dueDateTime, setDueDateTime] = useState('')
+    
+   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
    
-   
+
     function handleAddTask(e) {
 
     e.preventDefault();
@@ -49,7 +51,11 @@ function AddTask({ setTask }) {
     // e.g., by sending the task data to your backend API.
     console.log('New Task Added:', newTask)
 
-    axios.post('http://localhost:5000/taskapi/newtasks', newTask)
+    axios.post('http://localhost:5000/taskapi/newtasks',
+       newTask 
+      ,{
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then(response => {
         console.log('Task added successfully:', response.data)
       })
