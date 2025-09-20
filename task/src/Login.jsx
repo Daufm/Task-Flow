@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 
-function Login() {
+function Login({onLogin}) {
 
 const API_URL = import.meta.env.API_URL || 'http://localhost:5000';
 
@@ -31,10 +31,12 @@ const handleSubmit = async (e)=>{
    }
 
     // Redirect to dashboard or another page
+    if(onLogin) onLogin();
     navigate('/dashboard');
 
   } catch (error) {
     console.error(error);
+    toast.error("Login failed. Please check your credentials.");
   }
 }
 
