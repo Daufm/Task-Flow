@@ -34,5 +34,5 @@ const PORT = 5000;
 
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  // await sequelize.sync(); // creates tables if not exist
+   sequelize.sync({ alter: true });
 });

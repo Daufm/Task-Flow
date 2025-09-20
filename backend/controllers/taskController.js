@@ -1,13 +1,25 @@
 
 import Task from "../models/Task.js";
+import sequelize  from "../db/db.js";
 
 
 
 
 export const AllTask = async (req, res) => {
-     const { category, priority, status, date, search } = req.query;
 
-  let filtered = await Task.findAll();
+  const userId = req.user.id;
+
+  const { category, priority, status, date, search } = req.query;
+
+  // Using raw SQL query instead of Sequelize's findAll
+
+  let filtered = await sequelize.query(
+    "SELECT * FROM Tasks WHERE user_id = :userId",
+    {
+      replacements: { userId },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
 
   if (category) {
     filtered = filtered.filter((t) => t.category === category);
@@ -39,10 +51,11 @@ export const AllTask = async (req, res) => {
 
 // Create a new task// POST /newtasks
 export const AddTask = async (req, res) => { 
+  const userId = req.user.id;
     try {
-      // console.log("Request Body:", req.body); // Log the incoming request body
-        const { title, priority, category, due_date, due_date_time } = req.body;
-        const newTask = await Task.create({ title, priority, category, due_date, due_date_time });
+    const { title, priority, category, due_date, due_date_time } = req.body;
+
+    const newTask = await Task.create({ title, priority, category, due_date, due_date_time , user_id: userId });
         res.status(201).json(newTask);
     } catch (error) {
         console.error("Error creating task:", error);
@@ -56,7 +69,8 @@ export const UpdateTask = async (req ,res)=>{
 
    try{
     const task = await Task.findByPk(id);
-    if(!task){
+     
+    if(!task || task.user_id !== req.user.id){
       return res.status(404).json({error: "Task not found"});
     }
           task.status = status;
@@ -73,7 +87,7 @@ export const EditTask = async(req, res)=>{
    const {id , editedTask} = req.body;
     try{
       const task = await Task.findByPk(id);
-      if(!task){
+      if(!task || task.user_id !== req.user.id){
         return res.status(404).json({error: "Task not found"});
       }
       await task.update(editedTask);
@@ -88,7 +102,7 @@ export const updateTaskStatus = async(req ,res)=>{
   const {id , status} = req.body;
     try{
       const task = await Task.findByPk(id);
-      if(!task){
+      if(!task || task.user_id !== req.user.id){
         return res.status(404).json({error: "task not found"})
       }
       task.status = status;

@@ -40,7 +40,7 @@ function Content() {
  const [taskEdit, setTaskEdit] = useState(false);
  const [editedTask, setEditedTask] = useState({});
  
-
+const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
 
 const handleCheck = (e, task) => {
@@ -48,6 +48,8 @@ const handleCheck = (e, task) => {
   axios.post(`${API_URL}/taskapi/updateTaskStatus`, {
     id: task.id,
     status: newStatus
+  },{
+    headers: {Authorization: `Bearer ${token}`}
   })
   .then((response) => {
     toast.success(response.data.message || "Task updated successfully");
@@ -63,10 +65,15 @@ const handleCheck = (e, task) => {
   });
 };
 
+
+
 const handleTaskDelete = (task) => {
   axios.post(`${API_URL}/taskapi/updateTask`, {
     id: task.id,
     status: "done"
+  },
+  {
+    headers: { Authorization: `Bearer ${token}` }
   })
   .then((response) => {
      toast.success(response.data.message || "Task updated successfully");
@@ -86,9 +93,11 @@ const handleEditTask = (e) => {
   setTaskEdit(false);
   axios.post(`${API_URL}/taskapi/editTask`,
      {
-      id: editedTask.id, 
-       editedTask
-    } )
+      id: editedTask.id,
+      editedTask
+    },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
     .then((response) => {
       toast.success(response.data.message || "Task edited successfully");
       // Refetch tasks
@@ -119,7 +128,10 @@ const handleEditTask = (e) => {
     if (search) query.append("search", search);
 
     axios
-      .get(`${API_URL}/taskapi/tasks?${query.toString()}`)
+      .get(`${API_URL}/taskapi/tasks?${query.toString()}`,
+    {
+      headers: {Authorization: `Bearer ${token}`}
+    })
       .then((response) => {
         setTasks(Array.isArray(response.data) ? response.data : []);
       })

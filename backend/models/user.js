@@ -23,7 +23,11 @@ verified: {
 },
 verificationCode: {
    type: DataTypes.STRING
-   }
+   },
+},
+{
+  tableName: 'Users',
+ timestamps: true
 });
 
 export default User;
