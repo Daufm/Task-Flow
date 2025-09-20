@@ -1,4 +1,4 @@
-# Task Manager
+# Task Manager(TaskFlow)
 
 A simple application to help you manage your daily tasks efficiently.
 
