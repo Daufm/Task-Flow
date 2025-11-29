@@ -10,6 +10,8 @@ function Navbar() {
     // const [searchTerm, setSearchTerm] = React.useState("");
     const navigate = useNavigate();
 
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
     const handleSearch=(event)=>{
         navigate(`/?search=${event.target.value}`);
     }
@@ -55,8 +57,12 @@ function Navbar() {
                     />
                     <FontAwesomeIcon icon={faSearch} className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
                 </div>
-                <button onClick={handleLogin} className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700 cursor-pointer">Log In</button>
-                <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium cursor-pointer">Sign Up</button>
+
+                {!token ? (
+                    <button onClick={handleLogin} className="bg-transparent text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-700 cursor-pointer">Log In</button>
+                ) : (
+                    <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium cursor-pointer">Log Out</button>
+                )}
             </div>
         </nav>
     );

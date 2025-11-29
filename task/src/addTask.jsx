@@ -58,7 +58,12 @@ function AddTask({ setTask ,refreshTasks}) {
       })
       .then(response => {
         console.log('Task added successfully:', response.data)
-        if (refreshTasks) refreshTasks();
+        // Notify other components (Content) to refetch tasks
+        try {
+          window.dispatchEvent(new Event('tasks:refresh'));
+        } catch (e) {
+          console.error('Could not dispatch tasks:refresh event', e);
+        }
 
       })
       .catch(error => {

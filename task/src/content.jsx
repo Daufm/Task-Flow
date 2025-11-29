@@ -146,6 +146,25 @@ const handleEditTask = (e) => {
       });
   }, [search, category, date, status, priority]);
 
+  
+  // Listen for manual refresh events (e.g., after AddTask creates a task)
+  useEffect(() => {
+    const handler = () => {
+      // Reuse the same fetch logic, without search params
+      axios
+        .get(`${API_URL}/taskapi/tasks`, { headers: { Authorization: `Bearer ${token}` } })
+        .then((response) => {
+          setTasks(Array.isArray(response.data) ? response.data : []);
+        })
+        .catch((err) => {
+          console.error('Error refreshing tasks from event:', err);
+        });
+    };
+
+    window.addEventListener('tasks:refresh', handler);
+    return () => window.removeEventListener('tasks:refresh', handler);
+  }, [token]);
+
   const totalTask = tasks.length;
 
   return (
