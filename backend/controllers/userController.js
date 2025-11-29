@@ -13,14 +13,34 @@ export const signup = async (req, res) => {
   try {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      // If an account with this email exists, update it instead of inserting
+      // a new row. This prevents ER_DUP_ENTRY while allowing intentional
+      // re-submissions for testing — we overwrite username/password and
+      // reset verification state.
+      existingUser.username = username || existingUser.username;
+      existingUser.password = hashedPassword; // will be defined below
+      const verificationCode = crypto.randomBytes(3).toString("hex");
+      existingUser.verified = false;
+      existingUser.verificationCode = verificationCode;
+      await existingUser.save();
+
+      // Send verification code to email
+      await sendEmail(
+        email,
+        "Verification Code",
+        `Your verification code is: ${verificationCode}`
+      );
+
+      return res
+        .status(200)
+        .json({ message: "Existing user updated and verification code sent" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = crypto.randomBytes(3).toString("hex"); // 6-digit code
    
      //create user with verified false and store verification code
-    const newUser = await User.create({
+     await User.create({
       username,
       email,
       password: hashedPassword,
@@ -38,9 +58,22 @@ export const signup = async (req, res) => {
     return res.status(201).json({ message: "Verification code sent to your email",  });
   } catch (error) {
     console.error("Error during signup:", error);
+    // Handle duplicate email (unique constraint) gracefully so tests
+    // that intentionally try to insert a duplicate get a clear response.
+    // Sequelize unique constraint errors usually have name 'SequelizeUniqueConstraintError'
+    // and mysql2 low-level errors include original.code === 'ER_DUP_ENTRY'.
+    if (
+      error &&
+      (error.name === "SequelizeUniqueConstraintError" ||
+        (error.original && error.original.code === "ER_DUP_ENTRY"))
+    ) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export const verify = async (req, res) => {
     const {email, code} = req.body;
@@ -95,7 +128,7 @@ export const login = async (req, res) => {
       }
       
       const token = jwt.sign({ id: user.id }, secret, {
-        expiresIn: "1h",
+        expiresIn: "5h",
       });
       
       return res.status(200).json({ token });

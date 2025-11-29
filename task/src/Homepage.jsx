@@ -21,7 +21,14 @@ function Home() {
     'Low Priority',
     'Others'
   ]
-  
+
+
+const [taskData, setTaskData] = useState([])
+
+const fetchTasks = async () => {
+  const res = await axios.get('http://localhost:5000/taskapi/tasks', { headers: { Authorization: `Bearer ${token}` }});
+  setTaskData(res.data);
+};
 
 
   return (
@@ -91,7 +98,7 @@ function Home() {
                         <span className="font-semibold">+ Add New Task</span>
                         </button>
                         {task && (
-                          <AddTask setTask = {setTask}/>
+                          <AddTask setTask = {setTask} taskData={taskData} refreshTasks={fetchTasks} />
                         )}
                       </div>
                       </div>
@@ -99,7 +106,7 @@ function Home() {
                     </div>
                     <hr className="w-full border-t border-gray-300 mb-6" />
                     {/* Main content goes here */}
-          <Content />
+          <Content/>
 
         </main>
       </div>

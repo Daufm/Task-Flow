@@ -36,6 +36,7 @@ const categoryColor = [
 
 function Content() {
   const [tasks, setTasks] = useState([]);
+  
   const [searchParams] = useSearchParams();
  const [taskEdit, setTaskEdit] = useState(false);
  const [editedTask, setEditedTask] = useState({});
@@ -100,10 +101,15 @@ const handleEditTask = (e) => {
   )
     .then((response) => {
       toast.success(response.data.message || "Task edited successfully");
-      // Refetch tasks
-      axios.get(`${API_URL}/taskapi/tasks`).then((response) => {
-        setTasks(Array.isArray(response.data) ? response.data : []);
-      });
+      // Refetch tasks (include auth header so protected route succeeds)
+      axios
+        .get(`${API_URL}/taskapi/tasks`, { headers: { Authorization: `Bearer ${token}` } })
+        .then((response) => {
+          setTasks(Array.isArray(response.data) ? response.data : []);
+        })
+        .catch((err) => {
+          console.error('Error refetching tasks after edit:', err);
+        });
     })
     .catch((error) => {
       console.error("Error editing task:", error);

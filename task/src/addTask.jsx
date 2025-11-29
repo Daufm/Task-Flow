@@ -3,7 +3,7 @@ import axios from 'axios'
 
 
 
-function AddTask({ setTask }) {
+function AddTask({ setTask ,refreshTasks}) {
   // Logic to add the task
  
 
@@ -58,6 +58,8 @@ function AddTask({ setTask }) {
       })
       .then(response => {
         console.log('Task added successfully:', response.data)
+        if (refreshTasks) refreshTasks();
+
       })
       .catch(error => {
         console.error('Error adding task:', error)
