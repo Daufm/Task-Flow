@@ -13,27 +13,7 @@ export const signup = async (req, res) => {
   try {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      // If an account with this email exists, update it instead of inserting
-      // a new row. This prevents ER_DUP_ENTRY while allowing intentional
-      // re-submissions for testing — we overwrite username/password and
-      // reset verification state.
-      existingUser.username = username || existingUser.username;
-      existingUser.password = hashedPassword; // will be defined below
-      const verificationCode = crypto.randomBytes(3).toString("hex");
-      existingUser.verified = false;
-      existingUser.verificationCode = verificationCode;
-      await existingUser.save();
-
-      // Send verification code to email
-      await sendEmail(
-        email,
-        "Verification Code",
-        `Your verification code is: ${verificationCode}`
-      );
-
-      return res
-        .status(200)
-        .json({ message: "Existing user updated and verification code sent" });
+      return res.status(409).json({ message: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
