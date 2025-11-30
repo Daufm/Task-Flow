@@ -75,7 +75,7 @@ function Sidebar() {
       {/* Add Task */}
       <div className="relative">
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white border rounded px-3 py-2 w-40 flex items-center justify-between shadow transition duration-150"
+          className={`bg-blue-500 hover:bg-blue-600 text-white border rounded px-3 py-2 w-40 flex items-center justify-between shadow transition duration-150 ${expanded ? "" : "opacity-0 w-0 overflow-hidden"}`}
           onClick={() => setTask((prev) => !prev)}
         >
           <span className="font-semibold">+ Add New Task</span>

@@ -2,7 +2,8 @@ import { Sequelize } from "sequelize";
 
 const sequelize = new Sequelize("task_manager", "root", "", {
   host: "localhost",
-  dialect: "mysql"
+  dialect: "mysql",
+  logging: false,
 });
 
 sequelize.sync(); // Sync all models

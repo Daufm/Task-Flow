@@ -5,6 +5,7 @@ import Login from '@/Login.jsx'
 import SignUp from '@/SignUp.jsx'
 import Home from '@/Homepage.jsx'
 import Setting from '@/setting.jsx'
+import LandingPage from '@/LandingPage.jsx'
 
 
 
@@ -27,9 +28,10 @@ function App() {
   if (!auth) {
     return (
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login onLogin={() => setAuth(localStorage.getItem('token') || sessionStorage.getItem('token'))} />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<Login onLogin={() => setAuth(localStorage.getItem('token') || sessionStorage.getItem('token'))} />} />
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     );
   }
